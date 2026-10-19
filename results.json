@@ -1,0 +1,33 @@
+{
+  "question": "Can a class-balanced LightGBM detector on spectral and statistical features of simulated radar returns beat a standard MLP deep-learning-style detector at flagging jamming, especially when the jammer type is unseen during training?",
+  "method": "Simulated 256-sample radar pulses (target echo + noise, barrage and spoofing jamming in training; chirp jamming held out for test, plus a low-JTR slice). Baseline MLP on raw normalised amplitude/phase vs. CV-tuned class-balanced LightGBM on handcrafted features with isotonic calibration; 3 model seeds, one fixed data split.",
+  "dataset": {
+    "name": "Simulated radar pulse returns (numpy, complex baseband, 256 samples/pulse)",
+    "source_url": "https://numpy.org/ (synthetic, generated at run time)",
+    "n_rows": 40000,
+    "n_train": 24990,
+    "n_test": 15010,
+    "same_as_paper": false,
+    "baseline_is_papers_method": false
+  },
+  "metric_name": "macro-F1 on held-out (unseen) jammer type, threshold 0.5",
+  "higher_is_better": true,
+  "baseline": "MLPClassifier (64,32) on raw normalised amplitude and phase samples, standard-scaled; alpha tuned by 3-fold CV; isotonic calibration.",
+  "improved": "LightGBM (class_weight='balanced') on handcrafted spectral/statistical features (spectral flatness, FFT peak ratios, kurtosis, autocorrelation summaries, phase-increment stats); num_leaves/learning_rate tuned by 3-fold CV; isotonic calibration.",
+  "metrics": {
+    "baseline_score": 0.8437952543123796,
+    "baseline_score_std": 0.0011433000001252003,
+    "baseline_f1_all_test": 0.8237926067951316,
+    "baseline_f1_lowjtr": 0.6435202995068928,
+    "baseline_roc_auc_unseen": 0.9157799800519903,
+    "baseline_logloss_unseen": 0.3578958111309023,
+    "improved_score": 0.9943542941491984,
+    "improved_score_std": 0.00028937603601183803,
+    "improved_f1_all_test": 0.9908809240018533,
+    "improved_f1_lowjtr": 0.9894974434941647,
+    "improved_roc_auc_unseen": 0.9997179497083236,
+    "improved_logloss_unseen": 0.016610474632991517,
+    "improvement": 0.15055903983681884
+  },
+  "notes": "Simple simulation, not the paper's data or its deep-learning detector (architecture not given). Unseen jammer = chirp; test = 25% of seen-type pulses plus all chirp-jammed pulses. Only model seeds vary (data split fixed). Secondary metrics: f1_all_test (all test pulses), f1_lowjtr (JTR<0 dB slice), roc_auc and logloss on the unseen slice. Both models get identical CV tuning and calibration; the classifiers differ in input representation and class weighting. Results are specific to this simulator."
+}
