@@ -19,6 +19,30 @@ python analysis.py
 
 Results: written to `results.json` (figure in `figures/`).
 
+## Results (latest run)
+
+On my simulated radar pulse dataset, a standard MLP classifier on raw radar samples reached macro-F1 0.844 on the unseen chirp-jammer test set, while a class-balanced LightGBM on spectral and statistical features reached 0.994 on the same single data split.
+
+| Metric | Value |
+|---|---|
+| baseline_score | 0.8438 |
+| baseline_score_std | 0.001143 |
+| baseline_f1_all_test | 0.8238 |
+| baseline_f1_lowjtr | 0.6435 |
+| baseline_roc_auc_unseen | 0.9158 |
+| baseline_logloss_unseen | 0.3579 |
+| improved_score | 0.9944 |
+| improved_score_std | 0.0002894 |
+| improved_f1_all_test | 0.9909 |
+| improved_f1_lowjtr | 0.9895 |
+| improved_roc_auc_unseen | 0.9997 |
+| improved_logloss_unseen | 0.01661 |
+| improvement | 0.1506 |
+
+Run on 2026-10-19. Full output: [results.json](results.json) · [run.log](run.log)
+
+Notes: Simple simulation, not the paper's data or its deep-learning detector (architecture not given). Unseen jammer = chirp; test = 25% of seen-type pulses plus all chirp-jammed pulses. Only model seeds vary (data split fixed). Secondary metrics: f1_all_test (all test pulses), f1_lowjtr (JTR<0 dB slice), roc_auc and logloss on the unseen slice. Both models get identical CV tuning and calibration; the classifiers differ in input representation and class weighting. Results are specific to this simulator.
+
 ## Reference
 
 This project is motivated by the following paper:
